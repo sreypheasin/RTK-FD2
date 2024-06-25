@@ -1,6 +1,4 @@
 import { Button, Navbar } from "flowbite-react";
-import { useSelector } from "react-redux";
-import { selectValue } from "../../redux/feature/counter/counterSlice";
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 
@@ -8,7 +6,7 @@ export function NavbarComponent() {
   const location = useLocation();
   const pathname = location?.pathname;
   // console.log(pathname);
-  // console.log("location", location);
+  console.log("location", location);
   const [navbarList, setNavbarList] = useState([
     { title: "Home", path: "/" },
     { title: "Count", path: "/count" }

@@ -4,6 +4,7 @@ import { BASE_URL } from "../../api";
 const initialState = {
   products: [],
   product: {},
+  // idle -> |pending|fulfill|rejected|
   status: "idle",
   error: null
 };
@@ -12,48 +13,45 @@ export const fetchProducts = createAsyncThunk(
   "products/fetchProducts",
   async () => {
     const response = await fetch(`${BASE_URL}products`);
-    // return response.json();
     const data = await response.json();
-    console.log("data", data);
+    console.log("data", data.results);
     return data.results;
   }
 );
 
+// fetch product by id
 export const fetchProductById = createAsyncThunk(
   "products/fetchProductById",
   async (id) => {
     const response = await fetch(`${BASE_URL}products/${id}`);
-    // return response.json();
     const data = await response.json();
-    console.log(data);
-    return data.results;
+    console.log("data", data);
+    return data;
   }
 );
 
 export const productSlice = createSlice({
-  name: "product",
+  name: "products",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchProducts.pending, (state, action) => {
+      .addCase(fetchProducts.pending, (state) => {
         state.status = "loading";
       })
       .addCase(fetchProducts.fulfilled, (state, action) => {
-        state.status = "succeeded";
-
+        state.status = "success";
         state.products = action.payload;
-        console.log("action.payload", action.payload);
       })
       .addCase(fetchProducts.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message;
       })
-      .addCase(fetchProductById.pending, (state, action) => {
+      .addCase(fetchProductById.pending, (state) => {
         state.status = "loading";
       })
       .addCase(fetchProductById.fulfilled, (state, action) => {
-        state.status = "succeeded";
+        state.status = "success";
         state.product = action.payload;
       })
       .addCase(fetchProductById.rejected, (state, action) => {
@@ -65,6 +63,5 @@ export const productSlice = createSlice({
 
 // export reducer
 export default productSlice.reducer;
-// export selector
-// export const selectAllProducts = (state) => state.product.products;
-// export fetch product
+export const selectAllProducts = (state) => state.product.products;
+// export const selectProductById = (state) => state.product.product;

@@ -7,6 +7,7 @@ import "./index.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Layout from "./components/Layout/Layout.jsx";
 import Count from "./pages/counte/Count.jsx";
+import ProductDetail from "./pages/product-detail/ProductDetail.jsx";
 const route = createBrowserRouter([
   {
     path: "/",
@@ -26,7 +27,7 @@ const route = createBrowserRouter([
       },
       {
         path: "/product/:id",
-        element: <App />
+        element: <ProductDetail />
       }
     ]
   }

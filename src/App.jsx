@@ -1,24 +1,37 @@
 import { useDispatch, useSelector } from "react-redux";
 import "./App.css";
+import {
+  selectAllProducts,
+  fetchProducts
+} from "./redux/feature/product/productSlice";
 import { useEffect } from "react";
-import { fetchProducts } from "./redux/feature/product/productSlice";
+import { ProductCard } from "./components/common/cards/ProductCard";
 
 function App() {
+  const products = useSelector(selectAllProducts);
   const dispatch = useDispatch();
-  // const products = useSelector(selectAllProducts());
-  const products = useSelector((state) => state?.product.products);
   console.log("products", products);
-
   useEffect(() => {
-    console.log("called");
     dispatch(fetchProducts());
   }, []);
   return (
     <>
-      <h1 className="text-3xl font-bold text-blue-800 text-center">Products</h1>
-      {products?.map((product, index) => {
-        return <button key={index}></button>;
-      })}
+      <h1 className="text-3xl text-blue-800 font-bold text-center">
+        Our Product
+      </h1>
+      <section className=" grid grid-cols-1 md:grid-cols-3  gap-5 px-20 mt-5">
+        {products.map((product, index) => {
+          return (
+            <ProductCard
+              key={index}
+              image={product.image}
+              title={product.name}
+              price={product.price}
+              id={product.id}
+            />
+          );
+        })}
+      </section>
     </>
   );
 }
