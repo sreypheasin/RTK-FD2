@@ -1,6 +1,6 @@
 import { Button, Navbar } from "flowbite-react";
 import { useSelector } from "react-redux";
-import { selectValue } from "../../redux/feature/counterSlice";
+import { selectValue } from "../../redux/feature/counter/counterSlice";
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 
