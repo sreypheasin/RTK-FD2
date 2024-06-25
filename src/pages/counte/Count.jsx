@@ -4,7 +4,7 @@ import {
   increment,
   incrementByAmount,
   selectValue
-} from "../../redux/feature/counterSlice";
+} from "../../redux/feature/counter/counterSlice";
 import { Button } from "flowbite-react";
 import { useState } from "react";
 
