@@ -23,6 +23,10 @@ const route = createBrowserRouter([
       {
         path: "/count",
         element: <App />
+      },
+      {
+        path: "/product/:id",
+        element: <App />
       }
     ]
   }
