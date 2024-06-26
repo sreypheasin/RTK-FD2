@@ -27,7 +27,9 @@ function App() {
               image={product.image}
               title={product.name}
               price={product.price}
+              desc={product.desc}
               id={product.id}
+              qty={1}
             />
           );
         })}
