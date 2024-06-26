@@ -1,8 +1,17 @@
 import { Card } from "flowbite-react";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
+import { addToCard } from "../../../redux/feature/cart/CartSlice";
 
-export function ProductCard({ image, title, price, id }) {
-  //   console.log(image);
+export function ProductCard({ image, title, price, id, desc }) {
+  const dispatch = useDispatch();
+
+  // handle product add to cart
+  const handleAddToCart = () => {
+    dispatch(addToCard({ image, title, price, id, desc }));
+  };
+
   return (
     <Card className="max-w-sm">
       <Link to={`product/${id}`}>
@@ -12,7 +21,7 @@ export function ProductCard({ image, title, price, id }) {
             "https://i0.wp.com/sunrisedaycamp.org/wp-content/uploads/2020/10/placeholder.png?ssl=1"
           }
           alt={title || "product image"}
-          className="h-[250px]"
+          className="h-[250px] w-auto object-cover"
         />
       </Link>
       <a href="#">
@@ -24,12 +33,12 @@ export function ProductCard({ image, title, price, id }) {
         <span className="text-2xl font-bold text-gray-900 dark:text-white">
           ${price ? price : "unknown"}
         </span>
-        <a
-          href="#"
+        <button
+          onClick={() => handleAddToCart()}
           className="rounded-lg bg-cyan-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-cyan-800 focus:outline-none focus:ring-4 focus:ring-cyan-300 dark:bg-cyan-600 dark:hover:bg-cyan-700 dark:focus:ring-cyan-800"
         >
           Add to cart
-        </a>
+        </button>
       </div>
     </Card>
   );
