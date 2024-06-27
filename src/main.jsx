@@ -6,9 +6,12 @@ import App from "./App.jsx";
 import "./index.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Layout from "./components/Layout/Layout.jsx";
-import Count from "./pages/counte/Count.jsx";
+import Count from "./pages/count/Count.jsx";
 import ProductDetail from "./pages/product-detail/ProductDetail.jsx";
-import Cart from "./pages/cart/Cart.jsx";
+import Cart from "./pages/cart-page/Cart.jsx";
+import Login from "./pages/auth/Login.jsx";
+import Register from "./pages/auth/Register.jsx";
+
 const route = createBrowserRouter([
   {
     path: "/",
@@ -35,6 +38,14 @@ const route = createBrowserRouter([
         element: <Cart />
       }
     ]
+  },
+  {
+    path: "/login",
+    element: <Login />
+  },
+  {
+    path: "/register",
+    element: <Register />
   }
 ]);
 

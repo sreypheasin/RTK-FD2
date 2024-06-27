@@ -31,7 +31,9 @@ export function NavbarComponent() {
           </span>
         </Link>
 
-        <Button>Get started</Button>
+        <Button as={Link} to={"/login"}>
+          Login
+        </Button>
         <Navbar.Toggle />
       </div>
       <Navbar.Collapse>
