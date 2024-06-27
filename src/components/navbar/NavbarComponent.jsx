@@ -1,8 +1,12 @@
 import { Button, Navbar } from "flowbite-react";
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { FaCartPlus } from "react-icons/fa6";
+import { useSelector } from "react-redux";
 
 export function NavbarComponent() {
+  const totalItems = useSelector((state) => state?.cart?.totalItems);
+  console.log("totalItems", totalItems);
   const location = useLocation();
   const pathname = location?.pathname;
   // console.log(pathname);
@@ -20,6 +24,13 @@ export function NavbarComponent() {
         </span>
       </Navbar.Brand>
       <div className="flex md:order-2 items-center ">
+        <Link to="/cart" className="relative">
+          <FaCartPlus className="mr-5" />
+          <span className="absolute -top-4 right-1 text-cyan-700 font-semibold">
+            {totalItems}
+          </span>
+        </Link>
+
         <Button>Get started</Button>
         <Navbar.Toggle />
       </div>

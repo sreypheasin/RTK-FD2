@@ -29,6 +29,7 @@ function App() {
               price={product.price}
               id={product.id}
               desc={product.desc}
+              qty={1}
             />
           );
         })}
