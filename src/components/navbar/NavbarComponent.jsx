@@ -31,7 +31,9 @@ export function NavbarComponent() {
             {totalItems}
           </p>
         </Link>
-        <Button>Get started</Button>
+        <Button as={Link} to="/register">
+          Register
+        </Button>
         <Navbar.Toggle />
       </div>
       <Navbar.Collapse>
