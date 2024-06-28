@@ -21,11 +21,11 @@ const validationSchema = Yup.object({
   email: Yup.string().email("Invalid email").required("Email is required"),
   username: Yup.string().required("First name is required"),
   password: Yup.string()
-    .required("Password is required!")
     .matches(
       strongPasswordRegex,
       "Password must contain at least one uppercase, one lowercase, number and spacial character."
-    ),
+    )
+    .required("Password is required!"),
   confirmedPassword: Yup.string()
     .oneOf([Yup.ref("password")], "Confirm Password must match")
     .required("Confirm password is required")
