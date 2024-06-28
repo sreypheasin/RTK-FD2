@@ -8,7 +8,7 @@ import { selectUser } from "../../redux/feature/user/userSlice";
 
 // Regex for strong password
 const strongPasswordRegex =
-  "/^(?=.*[a-z])(?=.*[A-Z])(?=.*d)(?=.*[@$!%*?&])[A-Za-zd@$!%*?&]{8,}$/";
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*d)(?=.*[@$!%*?&])[A-Za-zd@$!%*?&]{8,}$/;
 // initialValues
 const initialValues = {
   email: "",
@@ -17,7 +17,7 @@ const initialValues = {
   confirmedPassword: ""
 };
 // validationSchema
-const validationSchema = Yup.object().shape({
+const validationSchema = Yup.object({
   email: Yup.string().email("Invalid email").required("Email is required"),
   username: Yup.string().required("First name is required"),
   password: Yup.string()
@@ -27,7 +27,7 @@ const validationSchema = Yup.object().shape({
       "Password must contain at least one uppercase, one lowercase, number and spacial character."
     ),
   confirmedPassword: Yup.string()
-    .oneOf([Yup.ref("password"), null], "Confirm Password must match")
+    .oneOf([Yup.ref("password")], "Confirm Password must match")
     .required("Confirm password is required")
 });
 
