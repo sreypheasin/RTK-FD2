@@ -44,7 +44,11 @@ export default function Login() {
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 required
               />
-              <ErrorMessage name="usernameOrEmail" />
+              <ErrorMessage
+                component="div"
+                name="usernameOrEmail"
+                className="text-red-600"
+              />
             </div>
             <div className="mt-5">
               <label htmlFor="password" required>
@@ -57,7 +61,25 @@ export default function Login() {
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 required
               />
-              <ErrorMessage name="password" />
+              <ErrorMessage
+                component="div"
+                name="password"
+                className="text-red-600"
+              />
+            </div>
+            <div className="flex justify-between  mt-2">
+              <a href="/register" className="">
+                Don&apos;t have account?{" "}
+                <span className="underline text-blue-700 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-500">
+                  register
+                </span>
+              </a>
+              <a
+                href="/forgot-password"
+                className="mt-2 underline text-blue-700 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-500"
+              >
+                Forgot password?
+              </a>
             </div>
             <button
               type="submit"
