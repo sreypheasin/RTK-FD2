@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { GRADESBOT_BASE_URL } from "../../api";
+import { GRADESBOT_BASE_URL, SPORTHUB_BASE_URL } from "../../api";
 const initialState = {
   user: {},
   status: "idle",
@@ -15,14 +15,15 @@ export const fetchCreateUser = createAsyncThunk(
       password,
       confirmPassword
     });
-    const response = fetch(`${GRADESBOT_BASE_URL}auth/register`, {
+    const response = await fetch(`${SPORTHUB_BASE_URL}register/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
       body
     });
-    const user = response.json();
+    const user = await response.json();
+    console.log("response", user);
     return user;
   }
 );
@@ -42,7 +43,8 @@ export const userSlice = createSlice({
       })
       .addCase(fetchCreateUser.rejected, (state, action) => {
         state.status = "failed";
-        state.error = action?.payload?.error?.description;
+        console.log("action", action?.error?.description);
+        state.error = action?.error?.description;
       });
   }
 });
@@ -53,3 +55,4 @@ export default userSlice.reducer;
 // export selector
 export const selectUser = (state) => state.user.user;
 export const selectError = (state) => state.user.error;
+export const selectUserStatus = (state) => state.user.status;

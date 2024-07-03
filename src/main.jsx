@@ -10,6 +10,7 @@ import Count from "./pages/counte/Count.jsx";
 import ProductDetail from "./pages/product-detail/ProductDetail.jsx";
 import Cart from "./pages/cart/Cart.jsx";
 import Register from "./pages/auth/Register.jsx";
+import VerifyEmail from "./pages/auth/VerifyEmail.jsx";
 const route = createBrowserRouter([
   {
     path: "/",
@@ -40,6 +41,10 @@ const route = createBrowserRouter([
   {
     path: "/register",
     element: <Register />
+  },
+  {
+    path: "/verify",
+    element: <VerifyEmail />
   }
 ]);
 
