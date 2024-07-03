@@ -1,11 +1,6 @@
 import React from "react";
 import { Formik, Form, ErrorMessage, Field } from "formik";
 import * as Yup from "yup";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  fetchCreateUser,
-  selectUser
-} from "../../redux/feature/user/userSlice";
 
 // REGEX for strong password
 const strongPasswordRegex =
@@ -34,9 +29,6 @@ const validationSchema = Yup.object({
   )
 });
 export default function Register() {
-  const user = useSelector(selectUser);
-  console.log("User in Register", user.message);
-  const dispatch = useDispatch();
   return (
     <section>
       <div className="flex justify-center items-center h-screen flex-col">
@@ -45,7 +37,6 @@ export default function Register() {
           validationSchema={validationSchema}
           onSubmit={(value) => {
             // console.log(value);
-            dispatch(fetchCreateUser(value));
           }}
         >
           {({ isSubmitting, setSubmitting }) => {
