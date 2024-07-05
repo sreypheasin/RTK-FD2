@@ -1,33 +1,57 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { GRADESBOT_BASE_URL, SPORTHUB_BASE_URL } from "../../api";
+import { SportHub_Base_Url } from "../../api";
+
 const initialState = {
-  user: {},
+  createUser: {},
+  verifyEmail: {},
   status: "idle",
   error: null
 };
 
+// create fetch user
 export const fetchCreateUser = createAsyncThunk(
   "user/fetchCreateUser",
   async ({ username, email, password, confirmPassword }) => {
+    // convert javascript object to json
     const body = JSON.stringify({
       username,
       email,
       password,
       confirmPassword
     });
-    const response = await fetch(`${SPORTHUB_BASE_URL}register/`, {
+    const response = await fetch(`${SportHub_Base_Url}register/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
       body
     });
+    // convert json to javascript object
     const user = await response.json();
-    console.log("response", user);
     return user;
   }
 );
+// verify-email
+export const fetchVerifyEmail = createAsyncThunk(
+  "user/fetchVerifyEmail",
+  async ({ email, otp_code }) => {
+    const body = JSON.stringify({
+      email,
+      otp_code
+    });
+    const response = await fetch(`${SportHub_Base_Url}verify-otp/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body
+    });
+    const apiResponse = await response.json();
+    return apiResponse;
+  }
+);
 
+// create reducer and action
 export const userSlice = createSlice({
   name: "user",
   initialState,
@@ -38,13 +62,23 @@ export const userSlice = createSlice({
         state.status = "loading";
       })
       .addCase(fetchCreateUser.fulfilled, (state, action) => {
+        // console.log("action.payload", action.payload);
         state.status = "success";
-        state.user = action.payload;
+        state.createUser = action.payload;
       })
-      .addCase(fetchCreateUser.rejected, (state, action) => {
+      .addCase(fetchCreateUser.rejected, (state) => {
         state.status = "failed";
-        console.log("action", action?.error?.description);
-        state.error = action?.error?.description;
+      })
+      .addCase(fetchVerifyEmail.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(fetchVerifyEmail.fulfilled, (state, action) => {
+        console.log("action.payload", action.payload);
+        state.status = "success";
+        state.verifyEmail = action.payload;
+      })
+      .addCase(fetchVerifyEmail.rejected, (state) => {
+        state.status = "failed";
       });
   }
 });
@@ -52,7 +86,8 @@ export const userSlice = createSlice({
 // export reducer
 export default userSlice.reducer;
 
+// export action
+// export const {} = userSlice.actions;
 // export selector
-export const selectUser = (state) => state.user.user;
-export const selectError = (state) => state.user.error;
-export const selectUserStatus = (state) => state.user.status;
+export const selectUser = (state) => state?.user?.createUser;
+export const selectVerifyEmail = (state) => state?.user?.verifyEmail;

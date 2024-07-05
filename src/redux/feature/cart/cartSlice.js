@@ -2,8 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   cartItems: [],
-  totalItems: 0,
-  quantity: 0
+  totalItems: 0
 };
 
 export const cartSlice = createSlice({
@@ -11,15 +10,14 @@ export const cartSlice = createSlice({
   initialState,
   reducers: {
     addToCard: (state, action) => {
-      console.log("action.payload", action.payload);
-      //   check if product exit
-      const existingProduct = state.cartItems.some(
+      //   console.log("action", action);
+      const { payload } = action;
+      // check if product existing
+      const isExisting = state.cartItems.some(
         (item) => item.id === action.payload.id
       );
-      console.log("existingProduct", existingProduct);
-
-      //   if product existing increase qty
-      if (existingProduct) {
+      //   if Existing increase qty
+      if (isExisting) {
         state.cartItems.map((item) => {
           if (item.id === action.payload.id) {
             item.qty += 1;
@@ -27,32 +25,42 @@ export const cartSlice = createSlice({
           }
         });
       } else {
+        state.cartItems.push(payload);
         state.totalItems += 1;
-        state.cartItems.push(action.payload);
       }
     },
-    increaseQuantity: (state, action) => {
-      // if product exist
-      state.cartItems.map((item) => {
-        if (item.id === action.payload.id) {
-          item.qty += 1;
-          state.totalItems += 1;
-        }
-      });
+    increaseQty: (state, action) => {
+      // if product existing
+      const isExisting = state.cartItems.some(
+        (item) => item.id === action.payload.id
+      );
+      if (isExisting) {
+        state.cartItems.map((item) => {
+          if (item.id === action.payload.id) {
+            item.qty += 1;
+          }
+        });
+      }
+      console.log("isExisting", isExisting);
     },
-    decreaseQuantity: (state, action) => {
-      // if product exist
-      state.cartItems.map((item) => {
-        if (item.id === action.payload.id && item.qty === 1) {
-          state.cartItems = state.cartItems.filter(
-            (item) => item.id !== action.payload.id
-          );
-          state.totalItems -= 1;
-        } else if (item.id === action.payload.id && item.qty > 1) {
-          item.qty -= 1;
-          state.totalItems -= 1;
-        }
-      });
+    decreaseQty: (state, action) => {
+      // if product existing
+      const isExisting = state.cartItems.some(
+        (item) => item.id === action.payload.id
+      );
+      if (isExisting) {
+        state.cartItems.map((item) => {
+          if (item.id === action.payload.id && item.qty > 1) {
+            item.qty -= 1;
+            state.totalItems -= 1;
+          } else if (item.id === action.payload.id && item.qty === 1) {
+            state.cartItems = state.cartItems.filter(
+              (item) => item.id !== action.payload.id
+            );
+            state.totalItems -= 1;
+          }
+        });
+      }
     },
     removeAll: (state) => {
       state.cartItems = [];
@@ -62,11 +70,10 @@ export const cartSlice = createSlice({
 });
 
 // export action
-export const { addToCard, increaseQuantity, decreaseQuantity, removeAll } =
+export const { addToCard, increaseQty, decreaseQty, removeAll } =
   cartSlice.actions;
+// export select
+export const selectCartITems = (state) => state?.cart?.cartItems;
 
-// export selector
-export const selectTotalItems = (state) => state?.cart?.totalItems;
-export const selectCartItems = (state) => state?.cart?.cartItems;
 // export reducer
 export default cartSlice.reducer;

@@ -19,7 +19,7 @@ function App() {
       <h1 className="text-3xl text-blue-800 font-bold text-center">
         Our Product
       </h1>
-      <section className=" grid grid-cols-1 md:grid-cols-3  gap-5 px-20 mt-5">
+      <section className=" grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3  gap-5 px-20 mt-5">
         {products.map((product, index) => {
           return (
             <ProductCard
@@ -29,6 +29,7 @@ function App() {
               price={product.price}
               desc={product.desc}
               id={product.id}
+              desc={product.desc}
               qty={1}
             />
           );

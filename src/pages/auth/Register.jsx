@@ -1,213 +1,166 @@
+import React, { useEffect, useState } from "react";
 import { Formik, Form, ErrorMessage, Field } from "formik";
 import * as Yup from "yup";
-import { IoIosEyeOff } from "react-icons/io";
-import { IoIosEye } from "react-icons/io";
-import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchCreateUser,
-  selectUser,
-  selectUserStatus,
-  selectError
+  selectUser
 } from "../../redux/feature/user/userSlice";
-import { useNavigate } from "react-router-dom";
 import { HiInformationCircle } from "react-icons/hi";
 import { Alert } from "flowbite-react";
-import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
-// Regex for strong password
+// REGEX for strong password
 const strongPasswordRegex =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+// initial values
 const initialValues = {
-  email: "",
   username: "",
+  email: "",
   password: "Qwer1234@",
   confirmPassword: "Qwer1234@"
 };
-// validationSchema
+
+// validation schema
 const validationSchema = Yup.object({
-  email: Yup.string().email("Invalid email").required("Email is required"),
-  username: Yup.string().required("First name is required"),
+  username: Yup.string().required("username is required"),
+  email: Yup.string().email("email is invalid").required("email is required"),
   password: Yup.string()
     .matches(
       strongPasswordRegex,
-      "Password must contain at least one uppercase, one lowercase, number and spacial character."
+      "password must contain one uppercase, one lowercase, one special character, number and must at least 8 characters"
     )
-    .required("Password is required!"),
-  confirmPassword: Yup.string()
-    .oneOf([Yup.ref("password")], "Confirm Password must match")
-    .required("Confirm password is required")
+    .required("password is required"),
+  confirmPassword: Yup.string().oneOf(
+    [Yup.ref("password"), null],
+    "confirm password must match"
+  )
 });
-
 export default function Register() {
-  const dispatch = useDispatch();
-  const userResponse = useSelector(selectUser);
-  const status = useSelector(selectUserStatus);
-  console.log("statue", status);
+  const [email, setEmail] = useState();
   const navigate = useNavigate();
+  const userResponse = useSelector(selectUser);
   console.log("userResponse", userResponse);
-
-  const [showPassword, setShowPassword] = useState(false);
-  // show password
-  const handleShowPassword = () => {
-    setShowPassword(!showPassword);
-  };
-
-  //   handle navigate to verify
-  const handleNavigate = () => {
-    if (userResponse?.message) {
-      navigate("/verify");
+  const dispatch = useDispatch();
+  // handle navigate
+  useEffect(() => {
+    if (userResponse?.status === 201) {
+      navigate("/verify-email", { state: email });
+      // console.log("called");
     }
+  }, [userResponse?.status, navigate]);
+  // handleGetEmail
+  const handleGetEmail = (e, setFieldValue) => {
+    setEmail(e.target.value);
+    setFieldValue("email", e.target.value);
   };
+  // console.log("email: ", email);
 
   return (
-    <section className="h-screen flex justify-center items-center  flex-col">
-      <section className="min-w-screen-sm w-1/2 bg-slate-100 p-8 rounded-md">
-        <h2 className="text-center text-3xl font-bold text-blue-800 mb-5">
-          Register
-        </h2>
+    <section>
+      <div className="flex justify-center items-center h-screen flex-col">
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
-          onSubmit={async (values, { resetForm }) => {
-            try {
-              await dispatch(fetchCreateUser(values));
-              handleNavigate();
-              resetForm();
-            } catch (error) {
-              console.error("Failed to create user:", error);
-            }
+          onSubmit={(value, { resetForm }) => {
+            // console.log(value);
+            dispatch(fetchCreateUser(value));
+            resetForm();
           }}
         >
-          <Form>
-            {userResponse.status && (
-              <Alert color="failure" className="mb-5">
-                {userResponse?.errors[0]?.error}
-              </Alert>
-            )}
-            {/* email */}
-            <div className="mb-5">
-              <label
-                htmlFor="email"
-                className="block mb-2 text-base font-medium text-gray-900 dark:text-white"
-              >
-                Email
-              </label>
-              <Field
-                type="email"
-                id="email"
-                name="email"
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                placeholder="Enter email"
-              />
-              <ErrorMessage
-                component="div"
-                name="email"
-                className="text-red-700 text-sm"
-              />
-            </div>
-            {/* username */}
-            <div className="mb-5">
-              <label
-                htmlFor="username"
-                className="block mb-2 text-base font-medium text-gray-900 dark:text-white"
-              >
-                username
-              </label>
-              <Field
-                type="text"
-                id="username"
-                name="username"
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                placeholder="Enter username"
-              />
-              <ErrorMessage
-                component="div"
-                name="username"
-                className="text-red-700 text-sm"
-              />
-            </div>
-
-            {/* password */}
-            <div className="mb-5">
-              <label
-                htmlFor="password"
-                className="block mb-2 text-base font-medium text-gray-900 dark:text-white"
-              >
-                Password
-              </label>
-              <div className="relative">
-                <Field
-                  type={showPassword ? "text" : "password"}
-                  id="password"
-                  name="password"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  placeholder="Enter password"
-                />
-                {showPassword ? (
-                  <IoIosEye
-                    onClick={() => handleShowPassword()}
-                    className="absolute right-2.5 top-3.5"
-                  />
-                ) : (
-                  <IoIosEyeOff
-                    onClick={() => handleShowPassword()}
-                    className="absolute right-2.5 top-3.5"
-                  />
+          {/* all this properties destructuring from object isSubmitting */}
+          {({ isSubmitting, setFieldValue }) => {
+            return (
+              <Form className="w-1/2 bg-slate-50 p-5 rounded-md">
+                {userResponse?.status === 409 && (
+                  <Alert color="failure" icon={HiInformationCircle}>
+                    {userResponse?.message}
+                  </Alert>
                 )}
-              </div>
-              <ErrorMessage
-                component="div"
-                name="password"
-                className="text-red-700 text-sm"
-              />
-            </div>
-            {/* confirm password */}
-            <div className="mb-5">
-              <label
-                htmlFor="confirmPassword"
-                className="block mb-2 text-base font-medium text-gray-900 dark:text-white"
-              >
-                Password
-              </label>
-              <div className="relative">
-                <Field
-                  type={showPassword ? "text" : "password"}
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  placeholder="Enter password"
-                />
-                {showPassword ? (
-                  <IoIosEye
-                    onClick={() => handleShowPassword()}
-                    className="absolute right-2.5 top-3.5"
+                {/* username */}
+                <div className="mt-5">
+                  <label htmlFor="username" placeholder="John" required>
+                    Username
+                  </label>
+                  <Field
+                    type="text"
+                    id="username"
+                    name="username"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    required
                   />
-                ) : (
-                  <IoIosEyeOff
-                    onClick={() => handleShowPassword()}
-                    className="absolute right-2.5 top-3.5"
+                  <ErrorMessage
+                    component="div"
+                    name="username"
+                    className="text-red-600"
                   />
-                )}
-              </div>
-              <ErrorMessage
-                component="div"
-                name="confirmPassword"
-                className="text-red-700 text-sm"
-              />
-            </div>
-            {/* button */}
-            <div className="flex justify-end">
-              <button
-                type="submit"
-                className="text-white bg-blue-800 hover:bg-blue-900 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-              >
-                Register
-              </button>
-            </div>
-          </Form>
+                </div>
+                {/* email */}
+                <div className="mt-5">
+                  <label htmlFor="email" required>
+                    Email
+                  </label>
+                  <Field
+                    type="email"
+                    id="email"
+                    name="email"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    onChange={(e) => handleGetEmail(e, setFieldValue)}
+                    required
+                  />
+                  <ErrorMessage
+                    component="div"
+                    name="email"
+                    className="text-red-600"
+                  />
+                </div>
+                {/* password */}
+                <div className="mt-5">
+                  <label htmlFor="password" required>
+                    Password
+                  </label>
+                  <Field
+                    type="password"
+                    id="password"
+                    name="password"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    required
+                  />
+                  <ErrorMessage
+                    component="div"
+                    name="password"
+                    className="text-red-600"
+                  />
+                </div>
+                {/* confirm password */}
+                <div className="mt-5">
+                  <label htmlFor="confirmPassword" required>
+                    Confirm Password
+                  </label>
+                  <Field
+                    type="password"
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    required
+                  />
+                  <ErrorMessage
+                    component="div"
+                    name="confirmPassword"
+                    className="text-red-600"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className=" mt-5 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                >
+                  Register
+                </button>
+              </Form>
+            );
+          }}
         </Formik>
-      </section>
+      </div>
     </section>
   );
 }

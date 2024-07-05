@@ -1,12 +1,31 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Formik, Form, ErrorMessage, Field } from "formik";
 import * as Yup from "yup";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchVerifyEmail,
+  selectVerifyEmail
+} from "../../redux/feature/user/userSlice";
 
 const validationSchema = Yup.object({
-  verificationCode: Yup.string().required("OTP code is required")
+  otp_code: Yup.string().required("OTP code is required")
 });
 
 export default function VerifyEmail() {
+  const VerifyEmailResponse = useSelector(selectVerifyEmail);
+  console.log("VerifyEmailResponse", VerifyEmailResponse);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const dispatch = useDispatch();
+  console.log("location", location);
+  const email = location?.state;
+  // handle navigate
+  useEffect(() => {
+    if (VerifyEmailResponse?.status === 200) {
+      navigate("/login");
+    }
+  }, [VerifyEmailResponse?.status]);
   return (
     <section className="flex justify-center items-center h-screen">
       <div className="w-1/2 bg-slate-50 p-5 rounded-md">
@@ -18,25 +37,25 @@ export default function VerifyEmail() {
         </p>
         <Formik
           initialValues={{
-            email: "",
-            verificationCode: ""
+            otp_code: ""
           }}
           validationSchema={validationSchema}
           onSubmit={(values) => {
-            console.log(values);
+            console.log("values", values);
+            dispatch(fetchVerifyEmail({ otp_code: values.otp_code, email }));
           }}
         >
           <Form>
             <div className="mb-5">
               <Field
                 type="text"
-                name="verificationCode"
+                name="otp_code"
                 placeholder="Enter OTP code"
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               />
               <ErrorMessage
                 component="div"
-                name="verificationCode"
+                name="otp_code"
                 className="text-red-700 text-sm"
               />
             </div>

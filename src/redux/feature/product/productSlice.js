@@ -9,6 +9,7 @@ const initialState = {
   error: null
 };
 
+// fetch products
 export const fetchProducts = createAsyncThunk(
   "products/fetchProducts",
   async () => {
