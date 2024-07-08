@@ -1,6 +1,9 @@
 import { useDispatch, useSelector } from "react-redux";
 import ProductInCart from "../../components/common/cards/ProductInCart";
-import { selectCartItems, removeAll } from "../../redux/feature/cart/cartSlice";
+import {
+  selectCartItems,
+  removeAll
+} from "../../redux/features/cart/cartSlice";
 
 export default function Cart() {
   const dispatch = useDispatch();

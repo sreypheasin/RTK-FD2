@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   fetchCreateUser,
   selectUser
-} from "../../redux/feature/user/userSlice";
+} from "../../redux/features/user/userSlice";
 import { HiInformationCircle } from "react-icons/hi";
 import { Alert } from "flowbite-react";
 import { useNavigate } from "react-router-dom";

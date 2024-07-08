@@ -2,7 +2,7 @@ import { useDispatch } from "react-redux";
 import {
   decreaseQty,
   increaseQty
-} from "../../../redux/feature/cart/cartSlice";
+} from "../../../redux/features/cart/cartSlice";
 
 export function ProductListCard({ image, title, price, desc, qty, id }) {
   const dispatch = useDispatch();

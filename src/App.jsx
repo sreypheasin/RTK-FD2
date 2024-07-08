@@ -3,7 +3,7 @@ import "./App.css";
 import {
   selectAllProducts,
   fetchProducts
-} from "./redux/feature/product/productSlice";
+} from "./redux/features/product/productSlice";
 import { useEffect } from "react";
 import { ProductCard } from "./components/common/cards/ProductCard";
 
@@ -14,6 +14,7 @@ function App() {
   useEffect(() => {
     dispatch(fetchProducts());
   }, []);
+  console.log(import.meta.env.VITE_APP_BASE_URL);
   return (
     <>
       <h1 className="text-3xl text-blue-800 font-bold text-center">
@@ -29,7 +30,6 @@ function App() {
               price={product.price}
               desc={product.desc}
               id={product.id}
-              desc={product.desc}
               qty={1}
             />
           );

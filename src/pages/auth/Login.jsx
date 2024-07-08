@@ -1,52 +1,77 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Formik, Form, ErrorMessage, Field } from "formik";
 import * as Yup from "yup";
+import { fetchLogin, selectLogin } from "../../redux/features/user/userSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
 
 // REGEX for strong password
 const strongPasswordRegex =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 // initial values
 const initialValues = {
-  usernameOrEmail: "",
+  email: "",
   password: ""
 };
 
 // validation schema
 const validationSchema = Yup.object({
-  usernameOrEmail: Yup.string().required("username or email is required"),
+  email: Yup.string().required("email is required"),
   password: Yup.string()
     .matches(
-      "strongPasswordRegex",
+      strongPasswordRegex,
       "password must contain one uppercase, one lowercase, one special character, number and must at least 8 characters"
     )
     .required("password is required")
 });
 export default function Login() {
+  const notify = () => toast.error("Wow so easy!");
+  const navigate = useNavigate();
+  const loginData = useSelector(selectLogin);
+  // const status = useSelector(selectStatus);
+  const dispatch = useDispatch();
+
+  console.log("loginData", loginData);
+  // handle toast
+  const handleToast = () => {
+    loginData && notify();
+  };
+  // handle navigate
+  useEffect(() => {
+    if (loginData?.status === 200) {
+      navigate("/");
+      console.log("login success");
+    }
+  }, [loginData]);
   return (
     <section>
       <div className="flex justify-center items-center h-screen flex-col">
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
-          onSubmit={(value) => {
+          onSubmit={async (value) => {
             console.log(value);
+            const submit = await dispatch(fetchLogin(value));
+            handleToast();
           }}
         >
           <Form className="w-1/2 bg-slate-50 p-5 rounded-md">
             <div className="mt-5">
-              <label htmlFor="usernameOrEmail" placeholder="John" required>
+              <label htmlFor="email" placeholder="John" required>
                 Username or Email
               </label>
               <Field
                 type="text"
-                id="usernameOrEmail"
-                name="usernameOrEmail"
+                id="email"
+                name="email"
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 required
               />
               <ErrorMessage
                 component="div"
-                name="usernameOrEmail"
+                name="email"
                 className="text-red-600"
               />
             </div>
@@ -90,6 +115,7 @@ export default function Login() {
           </Form>
         </Formik>
       </div>
+      <ToastContainer position="top-right" autoClose={5000} />
     </section>
   );
 }

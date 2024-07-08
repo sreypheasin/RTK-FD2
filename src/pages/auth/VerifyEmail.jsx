@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   fetchVerifyEmail,
   selectVerifyEmail
-} from "../../redux/feature/user/userSlice";
+} from "../../redux/features/user/userSlice";
 
 const validationSchema = Yup.object({
   otp_code: Yup.string().required("OTP code is required")

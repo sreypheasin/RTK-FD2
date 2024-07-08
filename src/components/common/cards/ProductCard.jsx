@@ -1,7 +1,7 @@
 import { Card } from "flowbite-react";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
-import { addToCard } from "../../../redux/feature/cart/cartSlice";
+import { addToCard } from "../../../redux/features/cart/cartSlice";
 
 export function ProductCard({ image, title, price, id, desc, qty }) {
   const dispatch = useDispatch();

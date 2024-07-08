@@ -1,7 +1,10 @@
 import React from "react";
 import { Card } from "flowbite-react";
 import { ProductListCard } from "../../components/common/cards/ProductListCard";
-import { removeAll, selectCartITems } from "../../redux/feature/cart/cartSlice";
+import {
+  removeAll,
+  selectCartITems
+} from "../../redux/features/cart/cartSlice";
 import { useDispatch, useSelector } from "react-redux";
 
 export default function Cart() {

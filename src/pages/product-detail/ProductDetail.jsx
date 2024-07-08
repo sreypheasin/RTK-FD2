@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { ProductDetailCard } from "../../components/common/cards/ProductDetailCard";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProductById } from "../../redux/feature/product/productSlice";
+import { fetchProductById } from "../../redux/features/product/productSlice";
 import { useParams } from "react-router-dom";
 // import { selectProductById } from "../../redux/feature/product/productSlice";
 

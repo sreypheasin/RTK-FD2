@@ -4,9 +4,13 @@ import { SportHub_Base_Url } from "../../api";
 const initialState = {
   createUser: {},
   verifyEmail: {},
+  login: {},
   status: "idle",
   error: null
 };
+
+// const BASE_URL = process.env.REACT_APP_SportHub_Base_Url;
+// console.log("BASE_URL", BASE_URL);
 
 // create fetch user
 export const fetchCreateUser = createAsyncThunk(
@@ -19,13 +23,16 @@ export const fetchCreateUser = createAsyncThunk(
       password,
       confirmPassword
     });
-    const response = await fetch(`${SportHub_Base_Url}register/`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body
-    });
+    const response = await fetch(
+      `${import.meta.env.VITE_APP_BASE_URL}register/`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body
+      }
+    );
     // convert json to javascript object
     const user = await response.json();
     return user;
@@ -51,6 +58,26 @@ export const fetchVerifyEmail = createAsyncThunk(
   }
 );
 
+// login
+export const fetchLogin = createAsyncThunk(
+  "user/fetchLogin",
+  async ({ email, password }) => {
+    const body = JSON.stringify({
+      email,
+      password
+    });
+    const response = await fetch(`${SportHub_Base_Url}login/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body
+    });
+    const apiResponse = await response.json();
+    return apiResponse;
+  }
+);
+
 // create reducer and action
 export const userSlice = createSlice({
   name: "user",
@@ -58,6 +85,7 @@ export const userSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+      // Register
       .addCase(fetchCreateUser.pending, (state) => {
         state.status = "loading";
       })
@@ -69,15 +97,28 @@ export const userSlice = createSlice({
       .addCase(fetchCreateUser.rejected, (state) => {
         state.status = "failed";
       })
+      // Verify
       .addCase(fetchVerifyEmail.pending, (state) => {
         state.status = "loading";
       })
       .addCase(fetchVerifyEmail.fulfilled, (state, action) => {
-        console.log("action.payload", action.payload);
+        // console.log("action.payload", action.payload);
         state.status = "success";
         state.verifyEmail = action.payload;
       })
       .addCase(fetchVerifyEmail.rejected, (state) => {
+        state.status = "failed";
+      })
+      // Login
+      .addCase(fetchLogin.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(fetchLogin.fulfilled, (state, action) => {
+        console.log("action.payload", action.payload);
+        state.status = "success";
+        state.login = action.payload;
+      })
+      .addCase(fetchLogin.rejected, (state) => {
         state.status = "failed";
       });
   }
@@ -91,3 +132,5 @@ export default userSlice.reducer;
 // export selector
 export const selectUser = (state) => state?.user?.createUser;
 export const selectVerifyEmail = (state) => state?.user?.verifyEmail;
+export const selectLogin = (state) => state?.user?.login;
+export const selectStatus = (state) => state?.user?.status;
